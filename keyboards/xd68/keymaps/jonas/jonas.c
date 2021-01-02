@@ -28,25 +28,25 @@ bool momentary_layer(bool key_down, void *layer) {
     return false;
 }
 
-const key_override_t fnOverride = {.trigger_modifiers      = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),               //
-                                   .layers                 = ~(1 << LAYER_FN),                                  //
-                                   .suppressed_mods        = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),               //
-                                   .options                = ko_options_default,                                //
-                                   .negative_modifier_mask = (uint8_t) ~(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL)),  //
-                                   .custom_action          = momentary_layer,                                   //
-                                   .context                = (void *)LAYER_FN,                                  //
-                                   .trigger                = KC_NO,                                             //
-                                   .replacement            = KC_NO,                                             //
+const key_override_t fnOverride = {.trigger_modifiers      = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),                       //
+                                   .layers                 = ~(1 << LAYER_FN),                                          //
+                                   .suppressed_mods        = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),                       //
+                                   .options                = ko_options_default | ko_option_exclusive_key_on_activate,  //
+                                   .negative_modifier_mask = (uint8_t) ~(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL)),          //
+                                   .custom_action          = momentary_layer,                                           //
+                                   .context                = (void *)LAYER_FN,                                          //
+                                   .trigger                = KC_NO,                                                     //
+                                   .replacement            = KC_NO,                                                     //
                                    .enabled                = NULL};
 
 // clang-format off
 
-#define ko_make_with_layers_negmods_options_and_enabled(trigger_mods, trigger_key, replacement_key, layer_mask, negative_mask, options_, enabled_) \
+#define ko_make_with_layers_negmods_and_enabled(trigger_mods, trigger_key, replacement_key, layer_mask, negative_mask, enabled_) \
     ((const key_override_t){                                                                \
         .trigger_modifiers                      = (trigger_mods),                           \
         .layers                                 = (layer_mask),                             \
         .suppressed_mods                        = (trigger_mods),                           \
-        .options                                = (options_),                               \
+        .options                                = ko_options_default,                               \
         .negative_modifier_mask                 = (negative_mask),                          \
         .custom_action                          = NULL,                                     \
         .context                                = NULL,                                     \
@@ -54,7 +54,10 @@ const key_override_t fnOverride = {.trigger_modifiers      = MOD_BIT(KC_RGUI) | 
         .replacement                            = (replacement_key),                        \
         .enabled                                = (enabled_)                                \
     })
+
 // clang-format on
+
+/* Cross-platform overrides: */
 
 // maps shift + backspace to delete
 const key_override_t backSpaceDeleteOverride = ko_make_basic(MOD_MASK_SHIFT, KC_BSPACE, KC_DELETE);
@@ -62,7 +65,7 @@ const key_override_t backSpaceDeleteOverride = ko_make_basic(MOD_MASK_SHIFT, KC_
 // ctrl + next track = Previous track
 const key_override_t prevTrackOverride = ko_make_basic(MOD_MASK_CTRL, KC_MEDIA_NEXT_TRACK, KC_MEDIA_PREV_TRACK);
 
-// ctlr/alt/cmd + escape = ^ (not sctrict modifier requirement to allow using shift to modify to °)
+// ctlr/alt/cmd + escape = ^. Allow shift down to shift to °
 const key_override_t hatEscOverride = ko_make_with_layers_negmods_and_options(MOD_MASK_CAG,
                                                                               KC_ESC,   //
                                                                               DE_CIRC,  //
@@ -70,132 +73,135 @@ const key_override_t hatEscOverride = ko_make_with_layers_negmods_and_options(MO
                                                                               0,        //
                                                                               ko_options_default | ko_option_one_mod);
 
+// lctrl + vol up = Screen brightness up
+const key_override_t brightnessUpOverride = ko_make_with_layers_and_negmods(MOD_BIT(KC_LCTRL),
+                                                                            KC_AUDIO_VOL_UP,   //
+                                                                            KC_BRIGHTNESS_UP,  //
+                                                                            ~0,                //
+                                                                            MOD_MASK_SA);
+
+// lctrl + vol down = Screenn brightness down
+const key_override_t brightnessDownOverride = ko_make_with_layers_and_negmods(MOD_BIT(KC_LCTRL),
+                                                                              KC_AUDIO_VOL_DOWN,   //
+                                                                              KC_BRIGHTNESS_DOWN,  //
+                                                                              ~0,                  //
+                                                                              MOD_MASK_ALT);
+
+/* Mac overrides: */
+
 // In coding mode the ö and ä keys are mapped to { and }. With the shift key they are shifted to [ and ]. With control give back ö and ä.
 
 // { and [
-const key_override_t curlyLeftBraceCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(0,
-                                                                                                        DE_OE,               //
-                                                                                                        LALT(KC_8),          //
-                                                                                                        1 << LAYER_MAC,      //
-                                                                                                        MOD_MASK_CSAG,       //
-                                                                                                        ko_options_default,  //
-                                                                                                        (bool *)&user_config.raw);
+const key_override_t curlyLeftBraceCodingModeOverride = ko_make_with_layers_negmods_and_enabled(0,
+                                                                                                DE_OE,           //
+                                                                                                LALT(KC_8),      //
+                                                                                                1 << LAYER_MAC,  //
+                                                                                                MOD_MASK_CSAG,   //
+                                                                                                (bool *)&user_config.raw);
 
-const key_override_t squareLeftBraceCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(MOD_MASK_SHIFT,
-                                                                                                         DE_OE,               //
-                                                                                                         LALT(KC_5),          //
-                                                                                                         1 << LAYER_MAC,      //
-                                                                                                         MOD_MASK_CAG,        //
-                                                                                                         ko_options_default,  //
-                                                                                                         (bool *)&user_config.raw);
+const key_override_t squareLeftBraceCodingModeOverride = ko_make_with_layers_negmods_and_enabled(MOD_MASK_SHIFT,
+                                                                                                 DE_OE,           //
+                                                                                                 LALT(KC_5),      //
+                                                                                                 1 << LAYER_MAC,  //
+                                                                                                 MOD_MASK_CAG,    //
+                                                                                                 (bool *)&user_config.raw);
 
-const key_override_t normalOeCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(MOD_MASK_CTRL,
-                                                                                                  DE_OE,                       //
-                                                                                                  DE_OE,                       //
-                                                                                                  1 << LAYER_MAC,              //
-                                                                                                  0,                           //
-                                                                                                  ko_options_all_activations,  //
-                                                                                                  (bool *)&user_config.raw);
+const key_override_t normalOeCodingModeOverride = ko_make_with_layers_negmods_and_enabled(MOD_MASK_CTRL,
+                                                                                          DE_OE,           //
+                                                                                          DE_OE,           //
+                                                                                          1 << LAYER_MAC,  //
+                                                                                          0,               //
+                                                                                          (bool *)&user_config.raw);
 
 // } and ]
-const key_override_t curlyRightBraceCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(0,
-                                                                                                         DE_AE,               //
-                                                                                                         LALT(KC_9),          //
-                                                                                                         1 << LAYER_MAC,      //
-                                                                                                         MOD_MASK_CSAG,       //
-                                                                                                         ko_options_default,  //
-                                                                                                         (bool *)&user_config.raw);
+const key_override_t curlyRightBraceCodingModeOverride = ko_make_with_layers_negmods_and_enabled(0,
+                                                                                                 DE_AE,           //
+                                                                                                 LALT(KC_9),      //
+                                                                                                 1 << LAYER_MAC,  //
+                                                                                                 MOD_MASK_CSAG,   //
+                                                                                                 (bool *)&user_config.raw);
 
-const key_override_t squareRightBraceCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(MOD_MASK_SHIFT,
-                                                                                                          DE_AE,               //
-                                                                                                          LALT(KC_6),          //
-                                                                                                          1 << LAYER_MAC,      //
-                                                                                                          MOD_MASK_CAG,        //
-                                                                                                          ko_options_default,  //
-                                                                                                          (bool *)&user_config.raw);
-
-const key_override_t normalAeCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(MOD_MASK_CTRL,
-                                                                                                  DE_AE,                       //
-                                                                                                  DE_AE,                       //
-                                                                                                  1 << LAYER_MAC,              //
-                                                                                                  0,                           //
-                                                                                                  ko_options_all_activations,  //
+const key_override_t squareRightBraceCodingModeOverride = ko_make_with_layers_negmods_and_enabled(MOD_MASK_SHIFT,
+                                                                                                  DE_AE,           //
+                                                                                                  LALT(KC_6),      //
+                                                                                                  1 << LAYER_MAC,  //
+                                                                                                  MOD_MASK_CAG,    //
                                                                                                   (bool *)&user_config.raw);
+
+const key_override_t normalAeCodingModeOverride = ko_make_with_layers_negmods_and_enabled(MOD_MASK_CTRL,
+                                                                                          DE_AE,           //
+                                                                                          DE_AE,           //
+                                                                                          1 << LAYER_MAC,  //
+                                                                                          0,               //
+                                                                                          (bool *)&user_config.raw);
 
 // (
-const key_override_t leftBraceCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(0,
-                                                                                                   DE_SS,               //
-                                                                                                   LSFT(KC_8),          //
-                                                                                                   1 << LAYER_MAC,      //
-                                                                                                   MOD_MASK_CSAG,       //
-                                                                                                   ko_options_default,  //
-                                                                                                   (bool *)&user_config.raw);
+const key_override_t leftBraceCodingModeOverride = ko_make_with_layers_negmods_and_enabled(0,
+                                                                                           DE_SS,           //
+                                                                                           LSFT(KC_8),      //
+                                                                                           1 << LAYER_MAC,  //
+                                                                                           MOD_MASK_CSAG,   //
+                                                                                           (bool *)&user_config.raw);
 
-const key_override_t normalssCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(MOD_MASK_CTRL,
-                                                                                                  DE_SS,               //
-                                                                                                  DE_SS,               //
-                                                                                                  1 << LAYER_MAC,      //
-                                                                                                  0,                   //
-                                                                                                  ko_options_default,  //
-                                                                                                  (bool *)&user_config.raw);
+const key_override_t normalssCodingModeOverride = ko_make_with_layers_negmods_and_enabled(MOD_MASK_CTRL,
+                                                                                          DE_SS,           //
+                                                                                          DE_SS,           //
+                                                                                          1 << LAYER_MAC,  //
+                                                                                          0,               //
+                                                                                          (bool *)&user_config.raw);
 
 // )
-const key_override_t rightBraceCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(0,
-                                                                                                    DE_ACUT,             //
-                                                                                                    LSFT(KC_9),          //
-                                                                                                    1 << LAYER_MAC,      //
-                                                                                                    MOD_MASK_CSAG,       //
-                                                                                                    ko_options_default,  //
-                                                                                                    (bool *)&user_config.raw);
+const key_override_t rightBraceCodingModeOverride = ko_make_with_layers_negmods_and_enabled(0,
+                                                                                            DE_ACUT,         //
+                                                                                            LSFT(KC_9),      //
+                                                                                            1 << LAYER_MAC,  //
+                                                                                            MOD_MASK_CSAG,   //
+                                                                                            (bool *)&user_config.raw);
 
-const key_override_t normalAcutCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(MOD_MASK_CTRL,
-                                                                                                    DE_ACUT,             //
-                                                                                                    DE_ACUT,             //
-                                                                                                    1 << LAYER_MAC,      //
-                                                                                                    0,                   //
-                                                                                                    ko_options_default,  //
-                                                                                                    (bool *)&user_config.raw);
+const key_override_t normalAcutCodingModeOverride = ko_make_with_layers_negmods_and_enabled(MOD_MASK_CTRL,
+                                                                                            DE_ACUT,         //
+                                                                                            DE_ACUT,         //
+                                                                                            1 << LAYER_MAC,  //
+                                                                                            0,               //
+                                                                                            (bool *)&user_config.raw);
 
 // / and | and \ .
 
-const key_override_t slashCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(0,
-                                                                                               DE_UE,               //
-                                                                                               LSFT(KC_7),          //
-                                                                                               1 << LAYER_MAC,      //
-                                                                                               MOD_MASK_CSAG,       //
-                                                                                               ko_options_default,  //
-                                                                                               (bool *)&user_config.raw);
+const key_override_t slashCodingModeOverride = ko_make_with_layers_negmods_and_enabled(0,
+                                                                                       DE_UE,           //
+                                                                                       LSFT(KC_7),      //
+                                                                                       1 << LAYER_MAC,  //
+                                                                                       MOD_MASK_CSAG,   //
+                                                                                       (bool *)&user_config.raw);
 
-const key_override_t pipeCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(MOD_MASK_ALT,
-                                                                                              DE_UE,               //
-                                                                                              LALT(LSFT(KC_7)),    //
-                                                                                              1 << LAYER_MAC,      //
-                                                                                              MOD_MASK_CG,         //
-                                                                                              ko_options_default,  //
-                                                                                              (bool *)&user_config.raw);
+const key_override_t pipeCodingModeOverride = ko_make_with_layers_negmods_and_enabled(MOD_MASK_ALT,
+                                                                                      DE_UE,             //
+                                                                                      LALT(LSFT(KC_7)),  //
+                                                                                      1 << LAYER_MAC,    //
+                                                                                      MOD_MASK_CG,       //
+                                                                                      (bool *)&user_config.raw);
 
-const key_override_t backslashCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(MOD_MASK_SHIFT,
-                                                                                                   DE_UE,               //
-                                                                                                   LALT(KC_7),          //
-                                                                                                   1 << LAYER_MAC,      //
-                                                                                                   MOD_MASK_CAG,        //
-                                                                                                   ko_options_default,  //
-                                                                                                   (bool *)&user_config.raw);
+const key_override_t backslashCodingModeOverride = ko_make_with_layers_negmods_and_enabled(MOD_MASK_SHIFT,
+                                                                                           DE_UE,           //
+                                                                                           LALT(KC_7),      //
+                                                                                           1 << LAYER_MAC,  //
+                                                                                           MOD_MASK_CAG,    //
+                                                                                           (bool *)&user_config.raw);
 
-const key_override_t normalUeCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(MOD_MASK_CTRL,
-                                                                                                  DE_UE,                       //
-                                                                                                  DE_UE,                       //
-                                                                                                  1 << LAYER_MAC,              //
-                                                                                                  MOD_MASK_CAG,                //
-                                                                                                  ko_options_all_activations,  //
-                                                                                                  (bool *)&user_config.raw);
+const key_override_t normalUeCodingModeOverride = ko_make_with_layers_negmods_and_enabled(MOD_MASK_CTRL,
+                                                                                          DE_UE,           //
+                                                                                          DE_UE,           //
+                                                                                          1 << LAYER_MAC,  //
+                                                                                          MOD_MASK_CAG,    //
+                                                                                          (bool *)&user_config.raw);
 
 // This has a strict requirement that no other mods can be down (hence negative_modifier_mask is ~MOD_MASK_CS). This is because ctrl + alt + shift + vol up is mapped to shift + alt + brightness up (ctrl + vol up has an override that turns it into brightness up) which is a small brightness increase on macOS.
-const key_override_t lockScreenOverrideMac = ko_make_with_layers_and_negmods(MOD_MASK_CS,
-                                                                             KC_AUDIO_VOL_UP,       //
-                                                                             LCTL(LSFT(KC_POWER)),  //
-                                                                             1 << LAYER_MAC,        //
-                                                                             ~MOD_MASK_CS);
+const key_override_t lockScreenOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_CS,
+                                                                                     KC_AUDIO_VOL_UP,       //
+                                                                                     LCTL(LSFT(KC_POWER)),  //
+                                                                                     1 << LAYER_MAC,        //
+                                                                                     ~MOD_MASK_CS,          //
+                                                                                     ko_options_default | ko_option_no_reregister_trigger);
 
 // shift + backspace = delete. delete + cmd = delete entire line (right of cursor), analog to cmd backspace (deletes left of cursor). Macos does this with ctrl + k for some reason, apparently this is some UNIX thing.
 const key_override_t deleteLineOverrideMac = ko_make_with_layers(MOD_MASK_SG,
@@ -203,37 +209,17 @@ const key_override_t deleteLineOverrideMac = ko_make_with_layers(MOD_MASK_SG,
                                                                  C(KC_K),    //
                                                                  1 << LAYER_MAC);
 
-// lctrl + vol up = Screen brightness up
-const key_override_t brightnessUpOverride = ko_make_with_layers_negmods_and_options(MOD_BIT(KC_LCTRL),
-                                                                                    KC_AUDIO_VOL_UP,   //
-                                                                                    KC_BRIGHTNESS_UP,  //
-                                                                                    ~0,                //
-                                                                                    MOD_MASK_SA,       //
-                                                                                    ko_options_all_activations | ko_option_reregister_trigger_on_deactivation);
-
-// lctrl + vol down = Screenn brightness down
-const key_override_t brightnessDownOverride = ko_make_with_layers_negmods_and_options(MOD_BIT(KC_LCTRL),
-                                                                                      KC_AUDIO_VOL_DOWN,   //
-                                                                                      KC_BRIGHTNESS_DOWN,  //
-                                                                                      ~0,                  //
-                                                                                      MOD_MASK_ALT,        //
-                                                                                      ko_options_all_activations | ko_option_reregister_trigger_on_deactivation);
-
 // ctrl + alt + vol up = Little screen brightness up
-const key_override_t smallBrightnessUpOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_CA,
-                                                                                            KC_AUDIO_VOL_UP,         //
-                                                                                            S(A(KC_BRIGHTNESS_UP)),  //
-                                                                                            1 << LAYER_MAC,          //
-                                                                                            0,                       //
-                                                                                            ko_options_all_activations | ko_option_reregister_trigger_on_deactivation);
+const key_override_t smallBrightnessUpOverrideMac = ko_make_with_layers(MOD_MASK_CA,             //
+                                                                        KC_AUDIO_VOL_UP,         //
+                                                                        S(A(KC_BRIGHTNESS_UP)),  //
+                                                                        1 << LAYER_MAC);
 
 // lctrl + alt + vol down = Little screenn brightness down
-const key_override_t smallBrightnessDownOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_CA,
-                                                                                              KC_AUDIO_VOL_DOWN,         //
-                                                                                              S(A(KC_BRIGHTNESS_DOWN)),  //
-                                                                                              1 << LAYER_MAC,            //
-                                                                                              0,                         //
-                                                                                              ko_options_all_activations | ko_option_reregister_trigger_on_deactivation);
+const key_override_t smallBrightnessDownOverrideMac = ko_make_with_layers(MOD_MASK_CA,
+                                                                          KC_AUDIO_VOL_DOWN,         //
+                                                                          S(A(KC_BRIGHTNESS_DOWN)),  //
+                                                                          1 << LAYER_MAC);
 
 // alt/rctrl + vol up = little vol up
 const key_override_t smallVolumeUpOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_ALT | MOD_BIT(KC_RCTRL),
@@ -241,7 +227,7 @@ const key_override_t smallVolumeUpOverrideMac = ko_make_with_layers_negmods_and_
                                                                                         S(A(KC_AUDIO_VOL_UP)),  //
                                                                                         1 << LAYER_MAC,         //
                                                                                         MOD_BIT(KC_LCTRL),      //
-                                                                                        ko_options_all_activations | ko_option_one_mod | ko_option_reregister_trigger_on_deactivation);
+                                                                                        ko_options_default | ko_option_one_mod);
 
 // alt/rctrl + vol down = little vol down
 const key_override_t smallVolumeDownOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_ALT | MOD_BIT(KC_RCTRL),
@@ -249,14 +235,15 @@ const key_override_t smallVolumeDownOverrideMac = ko_make_with_layers_negmods_an
                                                                                           S(A(KC_AUDIO_VOL_DOWN)),  //
                                                                                           1 << LAYER_MAC,           //
                                                                                           MOD_BIT(KC_LCTRL),        //
-                                                                                          ko_options_all_activations | ko_option_one_mod | ko_option_reregister_trigger_on_deactivation);
+                                                                                          ko_options_default | ko_option_one_mod);
 
-// Windows key overrides:
-const key_override_t lockScreenOverrideWindows = ko_make_with_layers_and_negmods(MOD_MASK_CS,
-                                                                                 KC_AUDIO_VOL_UP,     //
-                                                                                 LGUI(KC_L),          //
-                                                                                 1 << LAYER_WINDOWS,  //
-                                                                                 ~MOD_MASK_CS);
+/* Windows key overrides: */
+const key_override_t lockScreenOverrideWindows = ko_make_with_layers_negmods_and_options(MOD_MASK_CS,
+                                                                                         KC_AUDIO_VOL_UP,     //
+                                                                                         LGUI(KC_L),          //
+                                                                                         1 << LAYER_WINDOWS,  //
+                                                                                         ~MOD_MASK_CS,        //
+                                                                                         ko_options_default | ko_option_no_reregister_trigger);
 
 // clang-format off
 
