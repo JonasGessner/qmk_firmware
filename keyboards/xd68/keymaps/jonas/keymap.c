@@ -63,8 +63,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * |Ctrl|Alt |Cmd |        Space          |Cmd|Fn |Ctlr|Lef|Dow|Rig |
      * `----------------------------------------------------------------'
      */
-    [LAYER_MAC] = LAYOUT_65_iso(KC_ESC, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, DE_SS, DE_ACUT, KC_BSPC, KC__VOLUP,                      //
-                                KC_TAB, DE_Q, DE_W, DE_E, DE_R, DE_T, DE_Z, DE_U, DE_I, DE_O, DE_P, DE_UE, DE_PLUS, KC__VOLDOWN,                             //
+    [LAYER_MAC] = LAYOUT_65_iso(KC_ESC, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, DE_SS, DE_ACUT, KC_BSPC, KC_AUDIO_VOL_UP,                //
+                                KC_TAB, DE_Q, DE_W, DE_E, DE_R, DE_T, DE_Z, DE_U, DE_I, DE_O, DE_P, DE_UE, DE_PLUS, KC_AUDIO_VOL_DOWN,                       //
                                 TD(TD_CTRL_CAPS), DE_A, DE_S, DE_D, DE_F, DE_G, DE_H, DE_J, DE_K, DE_L, DE_OE, DE_AE, DE_HASH, KC_ENT, KC_MEDIA_PLAY_PAUSE,  //
                                 KC_LSFT, DE_LESS, DE_Y, DE_X, DE_C, DE_V, DE_B, DE_N, DE_M, DE_COMM, DE_DOT, DE_MINS, KC_RSFT, KC_UP, KC_MEDIA_NEXT_TRACK,   //
                                 KC_LCTL, KC_LALT, KC_LGUI, KC_SPC, KC_RGUI, MO(LAYER_FN), KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT),
