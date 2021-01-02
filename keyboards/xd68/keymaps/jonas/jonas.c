@@ -55,15 +55,29 @@ const key_override_t fnOverride = {.trigger_modifiers      = MOD_BIT(KC_RGUI) | 
         .enabled                                = (enabled_)                                \
     })
 
+#define ko_make_with_options(trigger_mods, trigger_key, replacement_key, options_) \
+    ((const key_override_t){                                                                \
+        .trigger_modifiers                      = (trigger_mods),                           \
+        .layers                                 = ~0,                             \
+        .suppressed_mods                        = (trigger_mods),                           \
+        .options                                = (options_),                               \
+        .negative_modifier_mask                 = 0,                          \
+        .custom_action                          = NULL,                                     \
+        .context                                = NULL,                                     \
+        .trigger                                = (trigger_key),                            \
+        .replacement                            = (replacement_key),                        \
+        .enabled                                = NULL                                \
+    })
+
 // clang-format on
 
 /* Cross-platform overrides: */
 
 // maps shift + backspace to delete
-const key_override_t backSpaceDeleteOverride = ko_make_basic(MOD_MASK_SHIFT, KC_BSPACE, KC_DELETE);
+const key_override_t backSpaceDeleteOverride = ko_make_with_options(MOD_MASK_SHIFT, KC_BSPACE, KC_DELETE, ko_options_default | ko_option_no_reregister_trigger);
 
 // ctrl + next track = Previous track
-const key_override_t prevTrackOverride = ko_make_basic(MOD_MASK_CTRL, KC_MEDIA_NEXT_TRACK, KC_MEDIA_PREV_TRACK);
+const key_override_t prevTrackOverride = ko_make_with_options(MOD_MASK_CTRL, KC_MEDIA_NEXT_TRACK, KC_MEDIA_PREV_TRACK, ko_options_default | ko_option_no_reregister_trigger);
 
 // ctlr/alt/cmd + escape = ^. Allow shift down to shift to °
 const key_override_t hatEscOverride = ko_make_with_layers_negmods_and_options(MOD_MASK_CAG,
@@ -71,7 +85,7 @@ const key_override_t hatEscOverride = ko_make_with_layers_negmods_and_options(MO
                                                                               DE_CIRC,  //
                                                                               ~0,       //
                                                                               0,        //
-                                                                              ko_options_default | ko_option_one_mod);
+                                                                              ko_options_default | ko_option_one_mod | ko_option_no_reregister_trigger);
 
 // lctrl + vol up = Screen brightness up
 const key_override_t brightnessUpOverride = ko_make_with_layers_and_negmods(MOD_BIT(KC_LCTRL),
@@ -204,10 +218,12 @@ const key_override_t lockScreenOverrideMac = ko_make_with_layers_negmods_and_opt
                                                                                      ko_options_default | ko_option_no_reregister_trigger);
 
 // shift + backspace = delete. delete + cmd = delete entire line (right of cursor), analog to cmd backspace (deletes left of cursor). Macos does this with ctrl + k for some reason, apparently this is some UNIX thing.
-const key_override_t deleteLineOverrideMac = ko_make_with_layers(MOD_MASK_SG,
-                                                                 KC_BSPACE,  //
-                                                                 C(KC_K),    //
-                                                                 1 << LAYER_MAC);
+const key_override_t deleteLineOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_SG,
+                                                                                     KC_BSPACE,       //
+                                                                                     C(KC_K),         //
+                                                                                     1 << LAYER_MAC,  //
+                                                                                     0,               //
+                                                                                     ko_options_default | ko_option_no_reregister_trigger);
 
 // ctrl + alt + vol up = Little screen brightness up
 const key_override_t smallBrightnessUpOverrideMac = ko_make_with_layers(MOD_MASK_CA,             //
