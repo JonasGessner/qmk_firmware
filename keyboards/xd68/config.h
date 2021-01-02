@@ -30,6 +30,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MATRIX_ROWS 5
 #define MATRIX_COLS 15
 
+#define TAPPING_TERM 500
+
 /*
  * Keyboard Matrix Assignments
  *

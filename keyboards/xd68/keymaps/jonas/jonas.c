@@ -132,11 +132,11 @@ const key_override_t leftBraceCodingModeOverride = ko_make_with_layers_negmods_o
                                                                                                    (bool *)&user_config.raw);
 
 const key_override_t normalssCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(MOD_MASK_CTRL,
-                                                                                                  DE_SS,                       //
-                                                                                                  DE_SS,                       //
-                                                                                                  1 << LAYER_MAC,              //
-                                                                                                  ko_options_default,          //
-                                                                                                  ko_options_all_activations,  //
+                                                                                                  DE_SS,               //
+                                                                                                  DE_SS,               //
+                                                                                                  1 << LAYER_MAC,      //
+                                                                                                  0,                   //
+                                                                                                  ko_options_default,  //
                                                                                                   (bool *)&user_config.raw);
 
 // )
@@ -149,11 +149,11 @@ const key_override_t rightBraceCodingModeOverride = ko_make_with_layers_negmods_
                                                                                                     (bool *)&user_config.raw);
 
 const key_override_t normalAcutCodingModeOverride = ko_make_with_layers_negmods_options_and_enabled(MOD_MASK_CTRL,
-                                                                                                    DE_ACUT,                     //
-                                                                                                    DE_ACUT,                     //
-                                                                                                    1 << LAYER_MAC,              //
-                                                                                                    ko_options_default,          //
-                                                                                                    ko_options_all_activations,  //
+                                                                                                    DE_ACUT,             //
+                                                                                                    DE_ACUT,             //
+                                                                                                    1 << LAYER_MAC,      //
+                                                                                                    0,                   //
+                                                                                                    ko_options_default,  //
                                                                                                     (bool *)&user_config.raw);
 
 // / and | and \ .
@@ -209,7 +209,7 @@ const key_override_t brightnessUpOverride = ko_make_with_layers_negmods_and_opti
                                                                                     KC_BRIGHTNESS_UP,  //
                                                                                     ~0,                //
                                                                                     MOD_MASK_SA,       //
-                                                                                    ko_options_all_activations);
+                                                                                    ko_options_all_activations | ko_option_reregister_trigger_on_deactivation);
 
 // lctrl + vol down = Screenn brightness down
 const key_override_t brightnessDownOverride = ko_make_with_layers_negmods_and_options(MOD_BIT(KC_LCTRL),
@@ -217,7 +217,7 @@ const key_override_t brightnessDownOverride = ko_make_with_layers_negmods_and_op
                                                                                       KC_BRIGHTNESS_DOWN,  //
                                                                                       ~0,                  //
                                                                                       MOD_MASK_ALT,        //
-                                                                                      ko_options_all_activations);
+                                                                                      ko_options_all_activations | ko_option_reregister_trigger_on_deactivation);
 
 // ctrl + alt + vol up = Little screen brightness up
 const key_override_t smallBrightnessUpOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_CA,
@@ -225,7 +225,7 @@ const key_override_t smallBrightnessUpOverrideMac = ko_make_with_layers_negmods_
                                                                                             S(A(KC_BRIGHTNESS_UP)),  //
                                                                                             1 << LAYER_MAC,          //
                                                                                             0,                       //
-                                                                                            ko_options_all_activations);
+                                                                                            ko_options_all_activations | ko_option_reregister_trigger_on_deactivation);
 
 // lctrl + alt + vol down = Little screenn brightness down
 const key_override_t smallBrightnessDownOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_CA,
@@ -233,7 +233,7 @@ const key_override_t smallBrightnessDownOverrideMac = ko_make_with_layers_negmod
                                                                                               S(A(KC_BRIGHTNESS_DOWN)),  //
                                                                                               1 << LAYER_MAC,            //
                                                                                               0,                         //
-                                                                                              ko_options_all_activations);
+                                                                                              ko_options_all_activations | ko_option_reregister_trigger_on_deactivation);
 
 // alt/rctrl + vol up = little vol up
 const key_override_t smallVolumeUpOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_ALT | MOD_BIT(KC_RCTRL),
@@ -241,7 +241,7 @@ const key_override_t smallVolumeUpOverrideMac = ko_make_with_layers_negmods_and_
                                                                                         S(A(KC_AUDIO_VOL_UP)),  //
                                                                                         1 << LAYER_MAC,         //
                                                                                         MOD_BIT(KC_LCTRL),      //
-                                                                                        ko_options_all_activations | ko_option_one_mod);
+                                                                                        ko_options_all_activations | ko_option_one_mod | ko_option_reregister_trigger_on_deactivation);
 
 // alt/rctrl + vol down = little vol down
 const key_override_t smallVolumeDownOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_ALT | MOD_BIT(KC_RCTRL),
@@ -249,7 +249,7 @@ const key_override_t smallVolumeDownOverrideMac = ko_make_with_layers_negmods_an
                                                                                           S(A(KC_AUDIO_VOL_DOWN)),  //
                                                                                           1 << LAYER_MAC,           //
                                                                                           MOD_BIT(KC_LCTRL),        //
-                                                                                          ko_options_all_activations | ko_option_one_mod);
+                                                                                          ko_options_all_activations | ko_option_one_mod | ko_option_reregister_trigger_on_deactivation);
 
 // Windows key overrides:
 const key_override_t lockScreenOverrideWindows = ko_make_with_layers_and_negmods(MOD_MASK_CS,
