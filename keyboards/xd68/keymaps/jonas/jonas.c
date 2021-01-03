@@ -74,10 +74,10 @@ const key_override_t fnOverride = {.trigger_modifiers      = MOD_BIT(KC_RGUI) | 
 /* Cross-platform overrides: */
 
 // maps shift + backspace to delete
-const key_override_t backSpaceDeleteOverride = ko_make_with_options(MOD_MASK_SHIFT, KC_BSPACE, KC_DELETE, ko_option_no_reregister_trigger);
+const key_override_t backSpaceDeleteOverride = ko_make_with_options(MOD_MASK_SHIFT, KC_BSPACE, KC_DELETE, ko_option_activation_trigger_down | ko_option_no_reregister_trigger);
 
 // ctrl + next track = Previous track
-const key_override_t prevTrackOverride = ko_make_with_options(MOD_MASK_CTRL, KC_MEDIA_NEXT_TRACK, KC_MEDIA_PREV_TRACK, ko_option_no_reregister_trigger);
+const key_override_t prevTrackOverride = ko_make_with_options(MOD_MASK_CTRL, KC_MEDIA_NEXT_TRACK, KC_MEDIA_PREV_TRACK, ko_option_activation_trigger_down | ko_option_no_reregister_trigger);
 
 // ctlr/alt/cmd + escape = ^. Allow shift down to shift to °
 const key_override_t hatEscOverride = ko_make_with_layers_negmods_and_options(MOD_MASK_CAG,
@@ -85,7 +85,7 @@ const key_override_t hatEscOverride = ko_make_with_layers_negmods_and_options(MO
                                                                               DE_CIRC,  //
                                                                               ~0,       //
                                                                               0,        //
-                                                                              ko_option_one_mod | ko_option_no_reregister_trigger);
+                                                                              ko_option_activation_trigger_down | ko_option_one_mod | ko_option_no_reregister_trigger);
 
 // lctrl + vol up = Screen brightness up
 const key_override_t brightnessUpOverride = ko_make_with_layers_and_negmods(MOD_BIT(KC_LCTRL),
@@ -215,7 +215,7 @@ const key_override_t lockScreenOverrideMac = ko_make_with_layers_negmods_and_opt
                                                                                      LCTL(LSFT(KC_POWER)),  //
                                                                                      1 << LAYER_MAC,        //
                                                                                      ~MOD_MASK_CS,          //
-                                                                                     ko_option_no_reregister_trigger);
+                                                                                     ko_option_activation_trigger_down | ko_option_no_reregister_trigger);
 
 // shift + backspace = delete. delete + cmd = delete entire line (right of cursor), analog to cmd backspace (deletes left of cursor). Macos does this with ctrl + k for some reason, apparently this is some UNIX thing.
 const key_override_t deleteLineOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_SG,
@@ -223,7 +223,7 @@ const key_override_t deleteLineOverrideMac = ko_make_with_layers_negmods_and_opt
                                                                                      C(KC_K),         //
                                                                                      1 << LAYER_MAC,  //
                                                                                      0,               //
-                                                                                     ko_option_no_reregister_trigger);
+                                                                                     ko_option_activation_trigger_down | ko_option_no_reregister_trigger);
 
 // ctrl + alt + vol up = Little screen brightness up
 const key_override_t smallBrightnessUpOverrideMac = ko_make_with_layers(MOD_MASK_CA,             //
@@ -259,7 +259,7 @@ const key_override_t lockScreenOverrideWindows = ko_make_with_layers_negmods_and
                                                                                          LGUI(KC_L),          //
                                                                                          1 << LAYER_WINDOWS,  //
                                                                                          ~MOD_MASK_CS,        //
-                                                                                         ko_option_no_reregister_trigger);
+                                                                                         ko_option_activation_trigger_down | ko_option_no_reregister_trigger);
 
 // clang-format off
 
