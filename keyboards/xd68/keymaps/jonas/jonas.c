@@ -71,6 +71,34 @@ const key_override_t fnOverride = {.trigger_modifiers      = MOD_BIT(KC_RGUI) | 
 
 // clang-format on
 
+bool windows_shortcut_hook(bool key_down, void *ctx) {
+    if (key_down) {
+        // tap down ctrl together with gui, this prevents the gui tap from opening the start menu
+        add_weak_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL));
+        send_keyboard_report();
+        del_weak_mods(MOD_BIT(KC_LGUI));
+        send_keyboard_report();
+    }
+
+    return true;
+}
+
+#define WIN_SHORTCUT_OVERRIDE(keycode) \
+    ((const key_override_t){                                                                \
+        .trigger_modifiers                      = MOD_BIT(KC_LGUI),                           \
+        .layers                                 = (1 << LAYER_WINDOWS),                             \
+        .suppressed_mods                        = MOD_BIT(KC_LGUI),                           \
+        .options                                = 0,                               \
+        .negative_modifier_mask                 = 0,                          \
+        .custom_action                          = windows_shortcut_hook,                                     \
+        .context                                = NULL,                                     \
+        .trigger                                = keycode,                            \
+        .replacement                            = C(keycode),                        \
+        .enabled                                = NULL                                \
+    })
+
+// ko_make_with_layers(MOD_BIT(KC_LGUI), keycode, C(keycode), 1 << LAYER_WINDOWS)
+
 /* Cross-platform overrides: */
 
 // maps shift + backspace to delete
@@ -301,6 +329,18 @@ const key_override_t **key_overrides = (const key_override_t *[]){
 
     // Windows-only overrides
     &lockScreenOverrideWindows,
+    &WIN_SHORTCUT_OVERRIDE(KC_A),
+    &WIN_SHORTCUT_OVERRIDE(KC_S),
+    &WIN_SHORTCUT_OVERRIDE(KC_X),
+    &WIN_SHORTCUT_OVERRIDE(KC_C),
+    &WIN_SHORTCUT_OVERRIDE(KC_V),
+    &WIN_SHORTCUT_OVERRIDE(KC_Z),
+    &WIN_SHORTCUT_OVERRIDE(KC_T),
+    &WIN_SHORTCUT_OVERRIDE(KC_W),
+    &WIN_SHORTCUT_OVERRIDE(KC_R),
+    &WIN_SHORTCUT_OVERRIDE(KC_F),
+    &WIN_SHORTCUT_OVERRIDE(KC_N),
+    &WIN_SHORTCUT_OVERRIDE(KC_P),
 
     // Extra stuff
     &fnOverride,
