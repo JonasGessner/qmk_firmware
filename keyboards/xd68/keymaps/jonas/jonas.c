@@ -46,7 +46,7 @@ const key_override_t fnOverride = {.trigger_modifiers      = MOD_BIT(KC_RGUI) | 
         .trigger_modifiers                      = (trigger_mods),                           \
         .layers                                 = (layer_mask),                             \
         .suppressed_mods                        = (trigger_mods),                           \
-        .options                                = ko_options_default,                               \
+        .options                                = ko_options_default,                       \
         .negative_modifier_mask                 = (negative_mask),                          \
         .custom_action                          = NULL,                                     \
         .context                                = NULL,                                     \
@@ -55,18 +55,18 @@ const key_override_t fnOverride = {.trigger_modifiers      = MOD_BIT(KC_RGUI) | 
         .enabled                                = (enabled_)                                \
     })
 
-#define ko_make_with_options(trigger_mods, trigger_key, replacement_key, options_) \
+#define ko_make_with_options(trigger_mods, trigger_key, replacement_key, options_)          \
     ((const key_override_t){                                                                \
         .trigger_modifiers                      = (trigger_mods),                           \
-        .layers                                 = ~0,                             \
+        .layers                                 = ~0,                                       \
         .suppressed_mods                        = (trigger_mods),                           \
         .options                                = (options_),                               \
-        .negative_modifier_mask                 = 0,                          \
+        .negative_modifier_mask                 = 0,                                        \
         .custom_action                          = NULL,                                     \
         .context                                = NULL,                                     \
         .trigger                                = (trigger_key),                            \
         .replacement                            = (replacement_key),                        \
-        .enabled                                = NULL                                \
+        .enabled                                = NULL                                      \
     })
 
 // clang-format on
@@ -85,16 +85,16 @@ bool windows_shortcut_hook(bool key_down, void *ctx) {
 
 #define WIN_SHORTCUT_OVERRIDE(keycode) \
     ((const key_override_t){                                                                \
-        .trigger_modifiers                      = MOD_BIT(KC_LGUI),                           \
-        .layers                                 = (1 << LAYER_WINDOWS),                             \
-        .suppressed_mods                        = MOD_BIT(KC_LGUI),                           \
-        .options                                = 0,                               \
-        .negative_modifier_mask                 = 0,                          \
-        .custom_action                          = windows_shortcut_hook,                                     \
+        .trigger_modifiers                      = MOD_BIT(KC_LGUI),                         \
+        .layers                                 = (1 << LAYER_WINDOWS),                     \
+        .suppressed_mods                        = MOD_BIT(KC_LGUI),                         \
+        .options                                = 0,                                        \
+        .negative_modifier_mask                 = 0,                                        \
+        .custom_action                          = windows_shortcut_hook,                    \
         .context                                = NULL,                                     \
-        .trigger                                = keycode,                            \
-        .replacement                            = C(keycode),                        \
-        .enabled                                = NULL                                \
+        .trigger                                = keycode,                                  \
+        .replacement                            = C(keycode),                               \
+        .enabled                                = NULL                                      \
     })
 
 // ko_make_with_layers(MOD_BIT(KC_LGUI), keycode, C(keycode), 1 << LAYER_WINDOWS)
