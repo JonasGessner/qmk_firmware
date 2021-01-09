@@ -15,10 +15,10 @@ BOOTLOADER = atmel-dfu
 #   change yes to no to disable
 #
 TAP_DANCE_ENABLE = no 
-BOOTMAGIC_ENABLE = no     # Virtual DIP switch configuration
+BOOTMAGIC_ENABLE = full     # Virtual DIP switch configuration
 MOUSEKEY_ENABLE = no       # Mouse keys
-EXTRAKEY_ENABLE = no       # Audio control and System control
-CONSOLE_ENABLE = no         # Console for debug
+EXTRAKEY_ENABLE = yes       # Audio control and System control
+CONSOLE_ENABLE = yes         # Console for debug
 COMMAND_ENABLE = no	    # Commands for debug and configuration
 # Do not enable SLEEP_LED_ENABLE. it uses the same timer as BACKLIGHT_ENABLE
 SLEEP_LED_ENABLE = no       # Breathing sleep LED during USB suspend
@@ -29,6 +29,11 @@ RGBLIGHT_ENABLE = no       # Enable keyboard RGB underglow
 MIDI_ENABLE = no            # MIDI support
 BLUETOOTH_ENABLE = no       # Enable Bluetooth with the Adafruit EZ-Key HID
 AUDIO_ENABLE = no           # Audio output on port C6
+FAUXCLICKY_ENABLE = no      # Use buzzer to emulate clicky switches
 UNICODE_ENABLE = no         # Unicode
+
+KEY_OVERRIDE_ENABLE = yes
+
+SRC += jonas.c tapping_action.c
 
 LAYOUTS = 65_ansi 65_ansi_split_bs 65_iso

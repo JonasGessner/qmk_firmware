@@ -15,3 +15,12 @@ typedef union {
 extern user_config_t user_config;
 
 enum my_keycodes { TOGGLE_CODING_OVERLAY = SAFE_RANGE };
+
+#define LAYER_MAC 0
+#define LAYER_WINDOWS 2
+
+// Null should be higher than coding layer and base layers
+#define LAYER_NULL 3
+
+// momentary layers, should have the highest numbers.
+#define LAYER_FN 4

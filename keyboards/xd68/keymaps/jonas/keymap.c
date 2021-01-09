@@ -7,40 +7,12 @@
 
 #include <print.h>
 
-// Tap Dance declarations
-enum {
-    TD_CTRL_CAPS,
-};
-
-// Tap Dance definitions
-qk_tap_dance_action_t tap_dance_actions[] = {
-    [TD_CTRL_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_LCTRL, KC_CAPS),
-};
-
-#define LAYER_MAC 0
-#define LAYER_WINDOWS 2
-
-// Null should be higher than coding layer and base layers
-#define LAYER_NULL 3
-
-// momentary layers, should have the highest numbers.
-#define LAYER_FN 4
-
 layer_state_t default_layer_state_set_user(layer_state_t state) {
     layer_state_t layer = get_highest_layer(state);
 
     eeconfig_update_default_layer(1U << layer);
 
     return state;
-}
-
-// To debug: uncomment and set CONSOLE_ENABLE=yes in rules.mk
-void keyboard_post_init_user(void) {
-    // Customise these values to desired behaviour
-    // debug_enable = true;
-    // debug_matrix = true;
-    // debug_keyboard = true;
-    // debug_mouse=true;
 }
 
 // Row 1: 15 keys
@@ -63,10 +35,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * |Ctrl|Alt |Cmd |        Space          |Cmd|Fn |Ctlr|Lef|Dow|Rig |
      * `----------------------------------------------------------------'
      */
-    [LAYER_MAC] = LAYOUT_65_iso(KC_ESC, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, DE_SS, DE_ACUT, KC_BSPC, KC_AUDIO_VOL_UP,                //
-                                KC_TAB, DE_Q, DE_W, DE_E, DE_R, DE_T, DE_Z, DE_U, DE_I, DE_O, DE_P, DE_UE, DE_PLUS, KC_AUDIO_VOL_DOWN,                       //
-                                TD(TD_CTRL_CAPS), DE_A, DE_S, DE_D, DE_F, DE_G, DE_H, DE_J, DE_K, DE_L, DE_OE, DE_AE, DE_HASH, KC_ENT, KC_MEDIA_PLAY_PAUSE,  //
-                                KC_LSFT, DE_LESS, DE_Y, DE_X, DE_C, DE_V, DE_B, DE_N, DE_M, DE_COMM, DE_DOT, DE_MINS, KC_RSFT, KC_UP, KC_MEDIA_NEXT_TRACK,   //
+    [LAYER_MAC] = LAYOUT_65_iso(KC_ESC, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, DE_SS, DE_ACUT, KC_BSPC, KC_AUDIO_VOL_UP,               //
+                                KC_TAB, DE_Q, DE_W, DE_E, DE_R, DE_T, DE_Z, DE_U, DE_I, DE_O, DE_P, DE_UE, DE_PLUS, KC_AUDIO_VOL_DOWN,                      //
+                                KC_LCTL, DE_A, DE_S, DE_D, DE_F, DE_G, DE_H, DE_J, DE_K, DE_L, DE_OE, DE_AE, DE_HASH, KC_ENT, KC_MEDIA_PLAY_PAUSE,          //
+                                KC_LSFT, DE_LESS, DE_Y, DE_X, DE_C, DE_V, DE_B, DE_N, DE_M, DE_COMM, DE_DOT, DE_MINS, KC_RSFT, KC_UP, KC_MEDIA_NEXT_TRACK,  //
                                 KC_LCTL, KC_LALT, KC_LGUI, KC_SPC, KC_RGUI, MO(LAYER_FN), KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT),
 
     /* Keymap LAYER_WINDOWS
@@ -124,5 +96,3 @@ LAYOUT_65_iso(_______, _______, _______, _______, _______, _______, _______, ___
                                            _______, _______, _______, _______, _______, _______, _______, _______, _______, _______),
 
                                            */
-
-#include "jonas.c"
