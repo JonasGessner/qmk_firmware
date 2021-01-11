@@ -80,11 +80,11 @@ extern bool windows_shortcut_hook(bool key_down, void *ctx);
 
 #define WIN_SHORTCUT_OVERRIDE(keycode) \
     ((const key_override_t){                                                                \
-        .trigger_modifiers                      = MOD_BIT(KC_LGUI),                         \
+        .trigger_mods                           = MOD_BIT(KC_LGUI),                         \
         .layers                                 = (1 << LAYER_WINDOWS),                     \
         .suppressed_mods                        = MOD_BIT(KC_LGUI),                         \
         .options                                = 0,                                        \
-        .negative_modifier_mask                 = 0,                                        \
+        .negative_mod_mask                      = 0,                                        \
         .custom_action                          = windows_shortcut_hook,                    \
         .context                                = NULL,                                     \
         .trigger                                = keycode,                                  \

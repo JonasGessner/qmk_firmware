@@ -12,11 +12,11 @@ bool momentary_layer(bool key_down, void *layer) {
     return false;
 }
 
-const key_override_t fnOverride = {.trigger_modifiers      = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),                       //
+const key_override_t fnOverride = {.trigger_mods      = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),                       //
                                    .layers                 = ~(1 << LAYER_FN),                                          //
                                    .suppressed_mods        = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),                       //
                                    .options                = ko_option_exclusive_key_on_activate,  //
-                                   .negative_modifier_mask = (uint8_t) ~(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL)),          //
+                                   .negative_mod_mask = (uint8_t) ~(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL)),          //
                                    .custom_action          = momentary_layer,                                           //
                                    .context                = (void *)LAYER_FN,                                          //
                                    .trigger                = KC_NO,                                                     //
@@ -25,13 +25,13 @@ const key_override_t fnOverride = {.trigger_modifiers      = MOD_BIT(KC_RGUI) | 
 
 // clang-format off
 
-#define ko_make_with_layers_negmods_and_enabled(trigger_mods, trigger_key, replacement_key, layer_mask, negative_mask, enabled_) \
+#define ko_make_with_layers_negmods_and_enabled(trigger_mods_, trigger_key, replacement_key, layer_mask, negative_mask, enabled_) \
     ((const key_override_t){                                                                \
-        .trigger_modifiers                      = (trigger_mods),                           \
+        .trigger_mods                           = (trigger_mods_),                          \
         .layers                                 = (layer_mask),                             \
-        .suppressed_mods                        = (trigger_mods),                           \
+        .suppressed_mods                        = (trigger_mods_),                          \
         .options                                = ko_options_default,                       \
-        .negative_modifier_mask                 = (negative_mask),                          \
+        .negative_mod_mask                      = (negative_mask),                          \
         .custom_action                          = NULL,                                     \
         .context                                = NULL,                                     \
         .trigger                                = (trigger_key),                            \
@@ -39,13 +39,13 @@ const key_override_t fnOverride = {.trigger_modifiers      = MOD_BIT(KC_RGUI) | 
         .enabled                                = (enabled_)                                \
     })
 
-#define ko_make_with_options(trigger_mods, trigger_key, replacement_key, options_)          \
+#define ko_make_with_options(trigger_mods_, trigger_key, replacement_key, options_)         \
     ((const key_override_t){                                                                \
-        .trigger_modifiers                      = (trigger_mods),                           \
+        .trigger_mods                           = (trigger_mods_),                          \
         .layers                                 = ~0,                                       \
-        .suppressed_mods                        = (trigger_mods),                           \
+        .suppressed_mods                        = (trigger_mods_),                          \
         .options                                = (options_),                               \
-        .negative_modifier_mask                 = 0,                                        \
+        .negative_mod_mask                      = 0,                                        \
         .custom_action                          = NULL,                                     \
         .context                                = NULL,                                     \
         .trigger                                = (trigger_key),                            \
@@ -205,7 +205,7 @@ const key_override_t normalUeCodingModeOverride = ko_make_with_layers_negmods_an
                                                                                           MOD_MASK_CAG,    //
                                                                                           (bool *)&user_config.raw);
 
-// This has a strict requirement that no other mods can be down (hence negative_modifier_mask is ~MOD_MASK_CS). This is because ctrl + alt + shift + vol up is mapped to shift + alt + brightness up (ctrl + vol up has an override that turns it into brightness up) which is a small brightness increase on macOS.
+// This has a strict requirement that no other mods can be down (hence negative_mod_mask is ~MOD_MASK_CS). This is because ctrl + alt + shift + vol up is mapped to shift + alt + brightness up (ctrl + vol up has an override that turns it into brightness up) which is a small brightness increase on macOS.
 const key_override_t lockScreenOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_CS,
                                                                                      KC_AUDIO_VOL_UP,       //
                                                                                      LCTL(LSFT(KC_POWER)),  //
