@@ -1,61 +1,5 @@
 #include "jonas.h"
-#include "timer.h"
-#include "debug.h"
-#include "tapping_action.h"
-
-user_config_t user_config;
-
-void matrix_init_user(void) { user_config.raw = eeconfig_read_user(); }
-
-tapping_action_make_double_tap_with_max_duration(enable_caps_tap, tapping_action_triggers(KC_LSFT, KC_RSFT), 400, {
-    tap_code(KC_CAPS);
-    return true;
-});
-
-tapping_action_make_single_tap_with_max_duration(disable_caps_tap, tapping_action_triggers(KC_LSFT, KC_RSFT), 400, {
-    tap_code(KC_CAPS);
-    return true;
-});
-
-tapping_action_make_single_tap(toggle_coding_mode_tap, TOGGLE_CODING_OVERLAY, {
-    user_config.coding_overlay_active = !user_config.coding_overlay_active;
-    eeconfig_update_user(user_config.raw);
-    return false;
-});
-
-tapping_action_t **taps = (tapping_action_t *[]){
-    &enable_caps_tap,
-    &disable_caps_tap,
-    &toggle_coding_mode_tap,
-    NULL
-};
-
-static void update_caps_taps(led_t led_state) {
-    const bool caps_on = led_state.caps_lock;
-
-    if (caps_on) {
-        disable_tap(&enable_caps_tap);
-        enable_tap(&disable_caps_tap);
-    } else {
-        enable_tap(&enable_caps_tap);
-        disable_tap(&disable_caps_tap);
-    }
-}
-
-bool led_update_user(led_t led_state) {
-    update_caps_taps(led_state);
-    return true;
-}
-
-// To debug: uncomment and set CONSOLE_ENABLE=yes in rules.mk
-void keyboard_post_init_user(void) {
-    update_caps_taps(host_keyboard_led_state());
-    // Customise these values to desired behaviour
-    // debug_enable = true;
-    // debug_matrix = true;
-    // debug_keyboard = true;
-    // debug_mouse=true;
-}
+#include "keymap_german.h"
 
 // PoC of using key overrides as layer toggle key. Here holding two mods together momentarily activates the FN layer. Use an FN layer without having to use an extra dedicated key to activate it!
 bool momentary_layer(bool key_down, void *layer) {
@@ -122,22 +66,6 @@ bool windows_shortcut_hook(bool key_down, void *ctx) {
 
     return true;
 }
-
-#define WIN_SHORTCUT_OVERRIDE(keycode) \
-    ((const key_override_t){                                                                \
-        .trigger_modifiers                      = MOD_BIT(KC_LGUI),                         \
-        .layers                                 = (1 << LAYER_WINDOWS),                     \
-        .suppressed_mods                        = MOD_BIT(KC_LGUI),                         \
-        .options                                = 0,                                        \
-        .negative_modifier_mask                 = 0,                                        \
-        .custom_action                          = windows_shortcut_hook,                    \
-        .context                                = NULL,                                     \
-        .trigger                                = keycode,                                  \
-        .replacement                            = C(keycode),                               \
-        .enabled                                = NULL                                      \
-    })
-
-// ko_make_with_layers(MOD_BIT(KC_LGUI), keycode, C(keycode), 1 << LAYER_WINDOWS)
 
 /* Cross-platform overrides: */
 
@@ -328,64 +256,3 @@ const key_override_t lockScreenOverrideWindows = ko_make_with_layers_negmods_and
                                                                                          1 << LAYER_WINDOWS,  //
                                                                                          ~MOD_MASK_CS,        //
                                                                                          ko_option_activation_trigger_down | ko_option_no_reregister_trigger);
-
-// clang-format off
-
-const key_override_t **key_overrides = (const key_override_t *[]){
-    // Shared
-    &backSpaceDeleteOverride,
-    &prevTrackOverride,
-    &hatEscOverride,
-    &brightnessUpOverride,
-    &brightnessDownOverride,
-
-    //Mac
-    &deleteLineOverrideMac,
-    &lockScreenOverrideMac,
-
-    &smallBrightnessUpOverrideMac,
-    &smallBrightnessDownOverrideMac,
-    &smallVolumeUpOverrideMac,
-    &smallVolumeDownOverrideMac,
-
-    // Coding mode overrides
-    &curlyLeftBraceCodingModeOverride,
-    &squareLeftBraceCodingModeOverride,
-    &normalOeCodingModeOverride,
-
-    &curlyRightBraceCodingModeOverride,
-    &squareRightBraceCodingModeOverride,
-    &normalAeCodingModeOverride,
-
-    &leftBraceCodingModeOverride,
-    &normalssCodingModeOverride,
-    &rightBraceCodingModeOverride,
-    &normalAcutCodingModeOverride,
-
-    &slashCodingModeOverride,
-    &pipeCodingModeOverride,
-    &backslashCodingModeOverride,
-    &normalUeCodingModeOverride,
-
-    // Windows-only overrides
-    &lockScreenOverrideWindows,
-    &WIN_SHORTCUT_OVERRIDE(KC_A),
-    &WIN_SHORTCUT_OVERRIDE(KC_S),
-    &WIN_SHORTCUT_OVERRIDE(KC_X),
-    &WIN_SHORTCUT_OVERRIDE(KC_C),
-    &WIN_SHORTCUT_OVERRIDE(KC_V),
-    &WIN_SHORTCUT_OVERRIDE(KC_Z),
-    &WIN_SHORTCUT_OVERRIDE(KC_T),
-    &WIN_SHORTCUT_OVERRIDE(KC_W),
-    &WIN_SHORTCUT_OVERRIDE(KC_R),
-    &WIN_SHORTCUT_OVERRIDE(KC_F),
-    &WIN_SHORTCUT_OVERRIDE(KC_N),
-    &WIN_SHORTCUT_OVERRIDE(KC_P),
-
-    // Extra stuff
-    &fnOverride,
-
-    NULL
-};
-
-// clang-format on

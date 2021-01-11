@@ -7,13 +7,73 @@
 
 #include <print.h>
 
-layer_state_t default_layer_state_set_user(layer_state_t state) {
-    layer_state_t layer = get_highest_layer(state);
+// clang-format off
 
-    eeconfig_update_default_layer(1U << layer);
+tapping_action_t **taps = (tapping_action_t *[]){
+    &enable_caps_tap,
+    &disable_caps_tap,
+    &toggle_coding_mode_tap,
+    NULL
+};
 
-    return state;
-}
+const key_override_t **key_overrides = (const key_override_t *[]){
+    // Shared
+    &backSpaceDeleteOverride,
+    &prevTrackOverride,
+    &hatEscOverride,
+    &brightnessUpOverride,
+    &brightnessDownOverride,
+
+    //Mac
+    &deleteLineOverrideMac,
+    &lockScreenOverrideMac,
+
+    &smallBrightnessUpOverrideMac,
+    &smallBrightnessDownOverrideMac,
+    &smallVolumeUpOverrideMac,
+    &smallVolumeDownOverrideMac,
+
+    // Coding mode overrides
+    &curlyLeftBraceCodingModeOverride,
+    &squareLeftBraceCodingModeOverride,
+    &normalOeCodingModeOverride,
+
+    &curlyRightBraceCodingModeOverride,
+    &squareRightBraceCodingModeOverride,
+    &normalAeCodingModeOverride,
+
+    &leftBraceCodingModeOverride,
+    &normalssCodingModeOverride,
+    &rightBraceCodingModeOverride,
+    &normalAcutCodingModeOverride,
+
+    &slashCodingModeOverride,
+    &pipeCodingModeOverride,
+    &backslashCodingModeOverride,
+    &normalUeCodingModeOverride,
+
+    // Windows-only overrides
+    &lockScreenOverrideWindows,
+    &WIN_SHORTCUT_OVERRIDE(KC_A),
+    &WIN_SHORTCUT_OVERRIDE(KC_S),
+    &WIN_SHORTCUT_OVERRIDE(KC_X),
+    &WIN_SHORTCUT_OVERRIDE(KC_C),
+    &WIN_SHORTCUT_OVERRIDE(KC_V),
+    &WIN_SHORTCUT_OVERRIDE(KC_Z),
+    &WIN_SHORTCUT_OVERRIDE(KC_T),
+    &WIN_SHORTCUT_OVERRIDE(KC_W),
+    &WIN_SHORTCUT_OVERRIDE(KC_R),
+    &WIN_SHORTCUT_OVERRIDE(KC_F),
+    &WIN_SHORTCUT_OVERRIDE(KC_N),
+    &WIN_SHORTCUT_OVERRIDE(KC_P),
+
+    // Extra stuff
+    &fnOverride,
+
+    NULL
+};
+
+// clang-format on
 
 // Row 1: 15 keys
 // Row 2: 14 keys (without enter)

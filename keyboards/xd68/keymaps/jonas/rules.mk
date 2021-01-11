@@ -1,16 +1,3 @@
-# MCU name
-MCU = atmega32u4
-
-# Bootloader selection
-#   Teensy       halfkay
-#   Pro Micro    caterina
-#   Atmel DFU    atmel-dfu
-#   LUFA DFU     lufa-dfu
-#   QMK DFU      qmk-dfu
-#   ATmega32A    bootloadHID
-#   ATmega328P   USBasp
-BOOTLOADER = atmel-dfu
-
 # QMK Build Options
 #   change yes to no to disable
 #
@@ -31,9 +18,3 @@ BLUETOOTH_ENABLE = no       # Enable Bluetooth with the Adafruit EZ-Key HID
 AUDIO_ENABLE = no           # Audio output on port C6
 FAUXCLICKY_ENABLE = no      # Use buzzer to emulate clicky switches
 UNICODE_ENABLE = no         # Unicode
-
-KEY_OVERRIDE_ENABLE = yes
-
-SRC += jonas.c tapping_action.c
-
-LAYOUTS = 65_ansi 65_ansi_split_bs 65_iso
