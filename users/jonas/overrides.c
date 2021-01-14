@@ -12,16 +12,16 @@ bool momentary_layer(bool key_down, void *layer) {
     return false;
 }
 
-const key_override_t fnOverride = {.trigger_mods      = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),                       //
-                                   .layers                 = ~(1 << LAYER_FN),                                          //
-                                   .suppressed_mods        = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),                       //
-                                   .options                = ko_option_exclusive_key_on_activate,  //
-                                   .negative_mod_mask = (uint8_t) ~(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL)),          //
-                                   .custom_action          = momentary_layer,                                           //
-                                   .context                = (void *)LAYER_FN,                                          //
-                                   .trigger                = KC_NO,                                                     //
-                                   .replacement            = KC_NO,                                                     //
-                                   .enabled                = NULL};
+const key_override_t fnOverride = {.trigger_mods      = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),               //
+                                   .layers            = ~(1 << LAYER_FN),                                  //
+                                   .suppressed_mods   = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),               //
+                                   .options           = ko_option_exclusive_key_on_activate,               //
+                                   .negative_mod_mask = (uint8_t) ~(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL)),  //
+                                   .custom_action     = momentary_layer,                                   //
+                                   .context           = (void *)LAYER_FN,                                  //
+                                   .trigger           = KC_NO,                                             //
+                                   .replacement       = KC_NO,                                             //
+                                   .enabled           = NULL};
 
 // clang-format off
 
@@ -185,15 +185,15 @@ const key_override_t slashCodingModeOverride = ko_make_with_layers_negmods_and_e
                                                                                        (bool *)&user_config.raw);
 
 const key_override_t pipeCodingModeOverride = ko_make_with_layers_negmods_and_enabled(MOD_MASK_ALT,
-                                                                                      DE_UE,             //
-                                                                                      LALT(LSFT(KC_7)),  //
-                                                                                      1 << LAYER_MAC,    //
-                                                                                      MOD_MASK_CG,       //
+                                                                                      DE_UE,           //
+                                                                                      LALT(KC_7),      //
+                                                                                      1 << LAYER_MAC,  //
+                                                                                      MOD_MASK_CG,     //
                                                                                       (bool *)&user_config.raw);
 
 const key_override_t backslashCodingModeOverride = ko_make_with_layers_negmods_and_enabled(MOD_MASK_SHIFT,
                                                                                            DE_UE,           //
-                                                                                           LALT(KC_7),      //
+                                                                                           A(S(KC_7)),      //
                                                                                            1 << LAYER_MAC,  //
                                                                                            MOD_MASK_CAG,    //
                                                                                            (bool *)&user_config.raw);
@@ -202,7 +202,7 @@ const key_override_t normalUeCodingModeOverride = ko_make_with_layers_negmods_an
                                                                                           DE_UE,           //
                                                                                           DE_UE,           //
                                                                                           1 << LAYER_MAC,  //
-                                                                                          MOD_MASK_CAG,    //
+                                                                                          MOD_MASK_ALT,    //
                                                                                           (bool *)&user_config.raw);
 
 // This has a strict requirement that no other mods can be down (hence negative_mod_mask is ~MOD_MASK_CS). This is because ctrl + alt + shift + vol up is mapped to shift + alt + brightness up (ctrl + vol up has an override that turns it into brightness up) which is a small brightness increase on macOS.
