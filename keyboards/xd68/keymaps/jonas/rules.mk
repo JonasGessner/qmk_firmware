@@ -20,3 +20,4 @@ FAUXCLICKY_ENABLE = no      # Use buzzer to emulate clicky switches
 UNICODE_ENABLE = no         # Unicode
 
 EXTRAFLAGS += -O3
+LTO_ENABLE = yes
