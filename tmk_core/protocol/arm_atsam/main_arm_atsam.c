@@ -284,6 +284,8 @@ int main(void) {
 
     debug_code_disable();
 
+    keyboard_did_start();
+
     while (1) {
         main_subtasks();  // Note these tasks will also be run while waiting for USB keyboard polling intervals
 

@@ -11,3 +11,44 @@ layer_state_t default_layer_state_set_user(layer_state_t state) {
 
     return state;
 }
+
+extern bool scan_keycode(uint8_t keycode);
+
+void keyboard_did_start() {
+    if (!scan_keycode(KC_LALT)) {
+        writePin(LED_CAPS_LOCK_PIN, LED_PIN_ON_STATE);
+        wait_ms(100);
+        writePin(LED_CAPS_LOCK_PIN, !LED_PIN_ON_STATE);
+        wait_ms(50);
+        writePin(LED_CAPS_LOCK_PIN, LED_PIN_ON_STATE);
+        wait_ms(100);
+    }
+    else {
+        uint8_t count = 0;
+        while (true) {
+            if (count == 0) {
+                writePin(LED_CAPS_LOCK_PIN, LED_PIN_ON_STATE);
+            }
+
+            add_mods(MOD_BIT(KC_LALT));
+            send_keyboard_report();
+            del_mods(MOD_BIT(KC_LALT));
+            send_keyboard_report();
+
+            if (count == 10) {
+                writePin(LED_CAPS_LOCK_PIN, !LED_PIN_ON_STATE);
+            }
+
+            count++;
+            count %= 20;
+
+            matrix_scan();
+
+            if (!scan_keycode(KC_LALT)) {
+                break;
+            }
+        }
+    }
+
+    writePin(LED_CAPS_LOCK_PIN, host_keyboard_led_state().caps_lock ? LED_PIN_ON_STATE : !LED_PIN_ON_STATE);
+}

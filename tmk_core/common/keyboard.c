@@ -289,6 +289,8 @@ void housekeeping_task(void) {
     housekeeping_task_user();
 }
 
+__attribute((weak)) void keyboard_did_start(void) {}
+
 /** \brief keyboard_init
  *
  * FIXME: needs doc

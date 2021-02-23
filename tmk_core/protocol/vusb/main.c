@@ -126,6 +126,8 @@ int main(void) {
     sleep_led_init();
 #endif
 
+    keyboard_did_start();
+    
     while (1) {
 #if USB_COUNT_SOF
         if (usbSofCount != 0) {

@@ -74,6 +74,8 @@ void housekeeping_task(void);       // To be executed by the main loop in each b
 void housekeeping_task_kb(void);    // To be overridden by keyboard-level code
 void housekeeping_task_user(void);  // To be overridden by user/keymap-level code
 
+void keyboard_did_start(void);
+
 uint32_t last_input_activity_time(void);     // Timestamp of the last matrix or encoder activity
 uint32_t last_input_activity_elapsed(void);  // Number of milliseconds since the last matrix or encoder activity
 

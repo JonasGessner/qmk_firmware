@@ -54,9 +54,19 @@ static bool bootmagic_scan_keycode(uint8_t keycode) {
 }
 
 void bootmagic(void) {
+    // Quick debounce
+    matrix_scan();
+    wait_ms(10);
+    matrix_scan();
+    wait_ms(10);
+    if (scan_keycode(KC_LALT)) {
+        // Skip bootmagic, go straight to spamming alt for bootcamp
+        return;
+    }
+
     /* do scans in case of bounce */
     print("bootmagic scan: ... ");
-    uint8_t scan = 100;
+    uint8_t scan = 50;
     while (scan--) {
         matrix_scan();
         wait_ms(10);
