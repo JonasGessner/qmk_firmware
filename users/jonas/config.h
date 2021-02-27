@@ -14,4 +14,4 @@
 #    define NO_PRINT
 #endif  // !NO_PRINT
 
-#define BOOTMAGIC_SPAM_ALT KC_LALT
+// #define DEBUG_KEY_OVERRIDE

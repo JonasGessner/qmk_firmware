@@ -18,7 +18,10 @@ extern user_config_t user_config;
 
 // Custom keycodes
 
-enum my_keycodes { TOGGLE_CODING_OVERLAY = SAFE_RANGE };
+enum my_keycodes_userspace {
+    TOGGLE_CODING_OVERLAY = SAFE_RANGE,
+    SAFE_RANGE_USERSPACE,
+};
 
 // Layers
 
