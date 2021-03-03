@@ -15,13 +15,17 @@ layer_state_t default_layer_state_set_user(layer_state_t state) {
 extern bool scan_keycode(uint8_t keycode);
 
 void keyboard_did_start() {
+    return;
+
     if (!scan_keycode(KC_LALT)) {
+#ifdef LED_CAPS_LOCK_PIN
         writePin(LED_CAPS_LOCK_PIN, LED_PIN_ON_STATE);
         wait_ms(100);
         writePin(LED_CAPS_LOCK_PIN, !LED_PIN_ON_STATE);
         wait_ms(50);
         writePin(LED_CAPS_LOCK_PIN, LED_PIN_ON_STATE);
         wait_ms(100);
+#endif
     }
     else {
         add_mods(MOD_BIT(KC_LALT));
@@ -29,6 +33,7 @@ void keyboard_did_start() {
 
         uint8_t count = 0;
         while (true) {
+#ifdef LED_CAPS_LOCK_PIN
             if (count == 0) {
                 writePin(LED_CAPS_LOCK_PIN, LED_PIN_ON_STATE);
             }
@@ -36,6 +41,7 @@ void keyboard_did_start() {
             if (count == 10) {
                 writePin(LED_CAPS_LOCK_PIN, !LED_PIN_ON_STATE);
             }
+#endif
 
             count++;
             count %= 20;
@@ -54,5 +60,7 @@ void keyboard_did_start() {
         send_keyboard_report();
     }
 
+#ifdef LED_CAPS_LOCK_PIN
     writePin(LED_CAPS_LOCK_PIN, host_keyboard_led_state().caps_lock ? LED_PIN_ON_STATE : !LED_PIN_ON_STATE);
+#endif
 }
