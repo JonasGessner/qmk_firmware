@@ -1,1 +1,28 @@
-#define AUDIO_PIN A5
+// Audio config
+#define AUDIO_PIN A6
+#define AUDIO_PWM_DRIVER PWMD3
+#define AUDIO_PWM_CHANNEL 1
+#define AUDIO_STATE_TIMER GPTD1
+#define AUDIO_PWM_PAL_MODE 1
+
+#define TEMPO_DEFAULT 120
+
+#define WIN_XP_SOUND E__NOTE(_FS8), S__NOTE(_FS6), E__NOTE(_CS7), S__NOTE(_CS7), E__NOTE(_AS8), E__NOTE(_FS6), E__NOTE(_FS8), H__NOTE(_CS7), Q__NOTE(_CS7),
+
+// #define STARTUP_SONG SONG(WIN_XP_SOUND)
+
+// Encoder config
+#define ENCODERS_PAD_A \
+    { B14 }
+#define ENCODERS_PAD_B \
+    { B13 }
+#define ENCODER_RESOLUTION 2
+
+// Caps LED
+#define LED_CAPS_LOCK_PIN A5
+#define LED_PIN_ON_STATE 1
+
+// Key Overrides
+
+#define LOCK_SCREEN_OVERRIDE_KEY KC_MEDIA_PLAY_PAUSE
+// #define DEBUG_KEY_OVERRIDE

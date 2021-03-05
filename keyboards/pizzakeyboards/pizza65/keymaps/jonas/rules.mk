@@ -18,6 +18,8 @@ BLUETOOTH_ENABLE = no       # Enable Bluetooth with the Adafruit EZ-Key HID
 AUDIO_ENABLE = yes           # Audio output on port C6
 FAUXCLICKY_ENABLE = no      # Use buzzer to emulate clicky switches
 UNICODE_ENABLE = no         # Unicode
-AUDIO_DRIVER = dac_basic
+AUDIO_DRIVER = pwm_hardware
 # EXTRAFLAGS += -O3
 LTO_ENABLE = yes
+
+ENCODER_ENABLE = yes

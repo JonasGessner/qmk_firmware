@@ -12,15 +12,15 @@ bool momentary_layer(bool key_down, void *layer) {
     return false;
 }
 
-const key_override_t fnOverride = {.trigger_mods      = MOD_RGUI | MOD_RCTL,                  //
-                                   .layers            = ~(1 << LAYER_FN),                     //
-                                   .suppressed_mods   = MOD_RGUI | MOD_RCTL,                  //
-                                   .options           = ko_option_exclusive_key_on_activate,  //
-                                   .negative_mod_mask = (uint8_t) ~(MOD_RGUI | MOD_RCTL),     //
-                                   .custom_action     = momentary_layer,                      //
-                                   .context           = (void *)LAYER_FN,                     //
-                                   .trigger           = KC_NO,                                //
-                                   .replacement       = KC_NO,                                //
+const key_override_t fnOverride = {.trigger_mods      = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),                                              //
+                                   .layers            = ~(1 << LAYER_FN),                                                                 //
+                                   .suppressed_mods   = MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL),                                              //
+                                   .options           = ko_option_no_unregister_on_other_key_down,  //
+                                   .negative_mod_mask = (uint8_t) ~(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL)),                                 //
+                                   .custom_action     = momentary_layer,                                                                  //
+                                   .context           = (void *)LAYER_FN,                                                                 //
+                                   .trigger           = KC_NO,                                                                            //
+                                   .replacement       = KC_NO,                                                                            //
                                    .enabled           = NULL};
 
 // clang-format off
@@ -84,14 +84,14 @@ const key_override_t hatEscOverride = ko_make_with_layers_negmods_and_options(MO
                                                                               ko_option_activation_trigger_down | ko_option_one_mod | ko_option_no_reregister_trigger);
 
 // lctrl + vol up = Screen brightness up
-const key_override_t brightnessUpOverride = ko_make_with_layers_and_negmods(MOD_LCTL,
+const key_override_t brightnessUpOverride = ko_make_with_layers_and_negmods(MOD_BIT(KC_LCTL),
                                                                             KC_AUDIO_VOL_UP,   //
                                                                             KC_BRIGHTNESS_UP,  //
                                                                             ~0,                //
                                                                             MOD_MASK_SA);
 
 // lctrl + vol down = Screenn brightness down
-const key_override_t brightnessDownOverride = ko_make_with_layers_and_negmods(MOD_LCTL,
+const key_override_t brightnessDownOverride = ko_make_with_layers_and_negmods(MOD_BIT(KC_LCTL),
                                                                               KC_AUDIO_VOL_DOWN,   //
                                                                               KC_BRIGHTNESS_DOWN,  //
                                                                               ~0,                  //
@@ -207,7 +207,7 @@ const key_override_t normalUeCodingModeOverride = ko_make_with_layers_negmods_an
 
 // This has a strict requirement that no other mods can be down (hence negative_mod_mask is ~MOD_MASK_CS). This is because ctrl + alt + shift + vol up is mapped to shift + alt + brightness up (ctrl + vol up has an override that turns it into brightness up) which is a small brightness increase on macOS.
 const key_override_t lockScreenOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_CS,
-                                                                                     KC_AUDIO_VOL_UP,       //
+                                                                                     LOCK_SCREEN_OVERRIDE_KEY,       //
                                                                                      LCTL(LSFT(KC_POWER)),  //
                                                                                      1 << LAYER_MAC,        //
                                                                                      ~MOD_MASK_CS,          //
@@ -234,24 +234,24 @@ const key_override_t smallBrightnessDownOverrideMac = ko_make_with_layers(MOD_MA
                                                                           1 << LAYER_MAC);
 
 // alt/rctrl + vol up = little vol up
-const key_override_t smallVolumeUpOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_ALT | MOD_RCTL,
+const key_override_t smallVolumeUpOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_ALT | MOD_BIT(KC_RCTL),
                                                                                         KC_AUDIO_VOL_UP,        //
                                                                                         S(A(KC_AUDIO_VOL_UP)),  //
                                                                                         1 << LAYER_MAC,         //
-                                                                                        MOD_LCTL,      //
+                                                                                        MOD_BIT(KC_LCTL),      //
                                                                                         ko_option_one_mod);
 
 // alt/rctrl + vol down = little vol down
-const key_override_t smallVolumeDownOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_ALT | MOD_RCTL,
+const key_override_t smallVolumeDownOverrideMac = ko_make_with_layers_negmods_and_options(MOD_MASK_ALT | MOD_BIT(KC_RCTL),
                                                                                           KC_AUDIO_VOL_DOWN,        //
                                                                                           S(A(KC_AUDIO_VOL_DOWN)),  //
                                                                                           1 << LAYER_MAC,           //
-                                                                                          MOD_LCTL,        //
+                                                                                          MOD_BIT(KC_LCTL),        //
                                                                                           ko_option_one_mod);
 
 /* Windows key overrides: */
 const key_override_t lockScreenOverrideWindows = ko_make_with_layers_negmods_and_options(MOD_MASK_CS,
-                                                                                         KC_AUDIO_VOL_UP,     //
+                                                                                         LOCK_SCREEN_OVERRIDE_KEY,     //
                                                                                          LGUI(KC_L),          //
                                                                                          1 << LAYER_WINDOWS,  //
                                                                                          ~MOD_MASK_CS,        //

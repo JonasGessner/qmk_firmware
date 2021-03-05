@@ -15,8 +15,6 @@ layer_state_t default_layer_state_set_user(layer_state_t state) {
 extern bool scan_keycode(uint8_t keycode);
 
 void keyboard_did_start() {
-    return;
-
     if (!scan_keycode(KC_LALT)) {
 #ifdef LED_CAPS_LOCK_PIN
         writePin(LED_CAPS_LOCK_PIN, LED_PIN_ON_STATE);
