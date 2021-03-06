@@ -20,6 +20,7 @@ extern user_config_t user_config;
 
 enum my_keycodes_userspace {
     TOGGLE_CODING_OVERLAY = SAFE_RANGE,
+    SPAM_ALT,
     SAFE_RANGE_USERSPACE,
 };
 

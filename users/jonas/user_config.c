@@ -26,7 +26,7 @@ void keyboard_did_start() {
 #endif
     }
     else {
-        add_mods(MOD_BIT(KC_LALT));
+        add_weak_mods(MOD_BIT(KC_LALT));
         send_keyboard_report();
 
         uint8_t count = 0;
@@ -46,7 +46,7 @@ void keyboard_did_start() {
 
             matrix_scan();
 
-            add_mods(MOD_BIT(KC_LALT));
+            add_weak_mods(MOD_BIT(KC_LALT));
             send_keyboard_report();
             
             if (!scan_keycode(KC_LALT)) {
@@ -54,11 +54,49 @@ void keyboard_did_start() {
             }
         }
 
-        del_mods(MOD_BIT(KC_LALT));
+        del_weak_mods(MOD_BIT(KC_LALT));
         send_keyboard_report();
     }
 
 #ifdef LED_CAPS_LOCK_PIN
     writePin(LED_CAPS_LOCK_PIN, host_keyboard_led_state().caps_lock ? LED_PIN_ON_STATE : !LED_PIN_ON_STATE);
 #endif
+}
+
+static uint16_t alt_spam_timestamp = 0;
+
+bool process_record_userspace(uint16_t keycode, keyrecord_t *record) {
+    if (keycode == SPAM_ALT) {
+        if (record->event.pressed) {
+            alt_spam_timestamp = timer_read() | 1;
+            add_weak_mods(MOD_BIT(KC_LALT));
+            send_keyboard_report();
+#ifdef LED_CAPS_LOCK_PIN
+            writePin(LED_CAPS_LOCK_PIN, LED_PIN_ON_STATE);
+#endif
+        }
+        else {
+            alt_spam_timestamp = 0;
+            del_weak_mods(MOD_BIT(KC_LALT));
+            send_keyboard_report();
+#ifdef LED_CAPS_LOCK_PIN
+            writePin(LED_CAPS_LOCK_PIN, !LED_PIN_ON_STATE);
+#endif
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+void matrix_scan_kb(void) {
+    matrix_scan_user();
+
+    if (alt_spam_timestamp != 0) {
+        if (timer_elapsed(alt_spam_timestamp) > 20) {
+            add_weak_mods(MOD_BIT(KC_LALT));
+            send_keyboard_report();
+        }
+    }
 }

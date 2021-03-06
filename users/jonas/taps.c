@@ -38,8 +38,15 @@ bool led_update_user(led_t led_state) {
 void keyboard_post_init_user(void) {
     update_caps_taps(host_keyboard_led_state());
     // Customise these values to desired behaviour
-    // debug_enable = true;
-    // debug_matrix = true;
-    // debug_keyboard = true;
-    // debug_mouse=true;
+#ifdef DEBUG_
+    debug_enable   = true;
+    debug_matrix   = true;
+    debug_keyboard = true;
+    debug_mouse    = true;
+#else
+    debug_enable   = false;
+    debug_matrix   = false;
+    debug_keyboard = false;
+    debug_mouse    = false;
+#endif
 }

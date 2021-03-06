@@ -16,10 +16,10 @@ RGBLIGHT_ENABLE = no       # Enable keyboard RGB underglow
 MIDI_ENABLE = no            # MIDI support
 BLUETOOTH_ENABLE = no       # Enable Bluetooth with the Adafruit EZ-Key HID
 AUDIO_ENABLE = yes           # Audio output on port C6
-FAUXCLICKY_ENABLE = no      # Use buzzer to emulate clicky switches
 UNICODE_ENABLE = no         # Unicode
 AUDIO_DRIVER = pwm_hardware
-# EXTRAFLAGS += -O3
-LTO_ENABLE = yes
+
+# EXTRAFLAGS += -O3 # Makes keyboard unresponsive!!
+# LTO_ENABLE = yes # Discouraged with ChibiOS
 
 ENCODER_ENABLE = yes

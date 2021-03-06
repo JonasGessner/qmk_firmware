@@ -23,6 +23,6 @@
 #define LED_PIN_ON_STATE 1
 
 // Key Overrides
-
 #define LOCK_SCREEN_OVERRIDE_KEY KC_MEDIA_PLAY_PAUSE
-// #define DEBUG_KEY_OVERRIDE
+
+// #define AUDIO_CLICKY

@@ -106,8 +106,10 @@ void enable_tap(tapping_action_t *tap) { tap->enabled = true; }
 
 // Overrides
 
+__attribute((weak)) bool process_record_userspace(uint16_t keycode, keyrecord_t *record) { return true; }
+
 bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
-    if (!process_record_tapping_action(keycode, record) || !process_record_user(keycode, record)) {
+    if (!process_record_tapping_action(keycode, record) || !process_record_user(keycode, record) || !process_record_userspace(keycode, record)) {
         return false;
     }
 
