@@ -9,14 +9,29 @@
 
 // clang-format off
 
-enum custom_codes {
-    KC_EMOJI_FN = SAFE_RANGE_USERSPACE,
-};
+// Creates a single and double tapping action, which activate mutually exclusively. Noice
+tapping_action_make_single_and_double_tap(fn_tap, MO(LAYER_FN), 400, 400, {
+    tap_code16(C(G(KC_SPACE))); // Open emoji menu
+    return true;
+}, {
+    tap_code16(G(KC_F12)); // Mapped to custom automator action on OS
+    return true;
+});
+
+bool tap_should_receive_record(tapping_action_t *const tap, const keyrecord_t *const record) {
+    if (tap == &single_fn_tap || tap == &double_fn_tap) {
+        const uint8_t layer = read_source_layers_cache(record->event.key);
+        return layer == LAYER_MAC;
+    }
+    return tap->enabled;
+}
 
 tapping_action_t **taps = (tapping_action_t *[]){
     &enable_caps_tap,
     &disable_caps_tap,
     &toggle_coding_mode_tap,
+    &single_fn_tap,
+    &double_fn_tap,
     NULL
 };
 
@@ -95,7 +110,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [LAYER_MAC] = LAYOUT_65_iso_blocker(KC_ESC, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, DE_SS, DE_ACUT, KC_BSPC, KC_AUDIO_MUTE,         //
                                         KC_TAB, DE_Q, DE_W, DE_E, DE_R, DE_T, DE_Z, DE_U, DE_I, DE_O, DE_P, DE_UE, DE_PLUS, KC_MEDIA_PLAY_PAUSE,            //
                                         KC_LCTL, DE_A, DE_S, DE_D, DE_F, DE_G, DE_H, DE_J, DE_K, DE_L, DE_OE, DE_AE, DE_HASH, KC_ENT, KC_MEDIA_NEXT_TRACK,  //
-                                        KC_LSFT, DE_LESS, DE_Y, DE_X, DE_C, DE_V, DE_B, DE_N, DE_M, DE_COMM, DE_DOT, DE_MINS, KC_RSFT, KC_UP, KC_EMOJI_FN,  //
+                                        KC_LSFT, DE_LESS, DE_Y, DE_X, DE_C, DE_V, DE_B, DE_N, DE_M, DE_COMM, DE_DOT, DE_MINS, KC_RSFT, KC_UP, MO(LAYER_FN),  //
                                         KC_LCTL, KC_LALT, KC_LGUI, KC_SPC, KC_RGUI, KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT),
 
     /* Keymap LAYER_WINDOWS
@@ -114,7 +129,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [LAYER_WINDOWS] = LAYOUT_65_iso_blocker(KC_ESC, DE_1, DE_2, DE_3, DE_4, DE_5, DE_6, DE_7, DE_8, DE_9, DE_0, DE_SS, DE_ACUT, KC_BSPC, KC_AUDIO_MUTE,         //
                                             KC_TAB, DE_Q, DE_W, DE_E, DE_R, DE_T, DE_Z, DE_U, DE_I, DE_O, DE_P, DE_UE, DE_PLUS, KC_MEDIA_PLAY_PAUSE,            //
                                             KC_CAPS, DE_A, DE_S, DE_D, DE_F, DE_G, DE_H, DE_J, DE_K, DE_L, DE_OE, DE_AE, DE_HASH, KC_ENT, KC_MEDIA_NEXT_TRACK,  //
-                                            KC_LSFT, DE_LESS, DE_Y, DE_X, DE_C, DE_V, DE_B, DE_N, DE_M, DE_COMM, DE_DOT, DE_MINS, KC_RSFT, KC_UP, KC_EMOJI_FN,  //
+                                            KC_LSFT, DE_LESS, DE_Y, DE_X, DE_C, DE_V, DE_B, DE_N, DE_M, DE_COMM, DE_DOT, DE_MINS, KC_RSFT, KC_UP, MO(LAYER_FN),  //
                                             KC_LCTL, KC_RALT, KC_LGUI, KC_SPC, KC_RALT, MO(LAYER_FN), KC_LEFT, KC_DOWN, KC_RGHT),
 
     [LAYER_NULL] = LAYOUT_65_iso_blocker(XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,       //
@@ -153,33 +168,6 @@ LAYOUT_65_iso_blocker(_______, _______, _______, _______, _______, _______, ____
                                            _______, _______, _______, _______, _______, _______, _______, _______, _______),
 
                                            */
-
-// Emoji/fn key
-
-static uint16_t emoji_key_down_time = 0;
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (keycode == KC_EMOJI_FN) {
-        if (record->event.pressed) {
-            layer_on(LAYER_FN);
-            emoji_key_down_time = timer_read();
-            if (emoji_key_down_time == 0) {
-                emoji_key_down_time = 1;
-            }
-        } else {
-            layer_off(LAYER_FN);
-            if (emoji_key_down_time != 0 && timer_elapsed(emoji_key_down_time) < 200) {
-                tap_code16(C(G(KC_SPACE)));
-            }
-        }
-
-        return false;
-    } else {
-        emoji_key_down_time = 0;
-    }
-
-    return true;
-}
 
 // Encoder
 

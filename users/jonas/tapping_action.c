@@ -2,7 +2,10 @@
 
 __attribute__((weak)) tapping_action_t **taps = NULL;
 
-static bool tap_should_receive_record(tapping_action_t *const tap, const keyrecord_t *const record) { return tap->enabled; }
+__attribute__((weak)) bool tap_should_receive_record(tapping_action_t *const tap, const keyrecord_t *const record) { return tap->enabled; }
+
+tapping_action_t *activation_candidate = NULL;
+uint16_t activation_candidate_last_event = 0;
 
 static bool process_record_for_tap(keyrecord_t *const record, tapping_action_t *tap) {
     if (!tap_should_receive_record(tap, record)) {
@@ -47,8 +50,19 @@ static bool process_record_for_tap(keyrecord_t *const record, tapping_action_t *
                     break;
                 }
 
+                dprintf("Tap requirements met\n");
+
+                if (tap->required_idle_post > 0) {
+                    activation_candidate = tap;
+                    activation_candidate_last_event = timer_read();
+                    break;
+                }
+
                 dprintf("Firing\n");
 
+                if (tap->force_reset != NULL) {
+                    reset_tap(tap->force_reset);
+                }
                 return tap->activation_handler(record, tap->context);
             } while (false);
         }
@@ -95,6 +109,9 @@ bool process_record_tapping_action(uint16_t keycode, keyrecord_t *record) {
 void reset_tap(tapping_action_t *tap) {
     tap->start = 0;
     tap->end   = 0;
+    if (activation_candidate == tap) {
+        activation_candidate = NULL;
+    }
 }
 
 void disable_tap(tapping_action_t *tap) {
@@ -109,9 +126,25 @@ void enable_tap(tapping_action_t *tap) { tap->enabled = true; }
 __attribute((weak)) bool process_record_userspace(uint16_t keycode, keyrecord_t *record) { return true; }
 
 bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
+    activation_candidate = NULL;
     if (!process_record_tapping_action(keycode, record) || !process_record_user(keycode, record) || !process_record_userspace(keycode, record)) {
         return false;
     }
 
     return true;
+}
+
+__attribute((weak)) void matrix_scan_userspace(void) {}
+
+void matrix_scan_kb(void) {
+    matrix_scan_userspace();
+    matrix_scan_user();
+
+    if (activation_candidate != NULL && timer_elapsed(activation_candidate_last_event) > activation_candidate->required_idle_post) {
+        if (activation_candidate->force_reset != NULL) {
+            reset_tap(activation_candidate->force_reset);
+        }
+        activation_candidate->activation_handler(NULL, activation_candidate->context);
+        activation_candidate = NULL;
+    }
 }

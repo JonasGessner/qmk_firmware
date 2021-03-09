@@ -90,9 +90,7 @@ bool process_record_userspace(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-void matrix_scan_kb(void) {
-    matrix_scan_user();
-
+void matrix_scan_userspace(void) {
     if (alt_spam_timestamp != 0) {
         if (timer_elapsed(alt_spam_timestamp) > 20) {
             add_weak_mods(MOD_BIT(KC_LALT));
