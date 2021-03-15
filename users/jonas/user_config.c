@@ -74,8 +74,7 @@ bool process_record_userspace(uint16_t keycode, keyrecord_t *record) {
 #ifdef LED_CAPS_LOCK_PIN
             writePin(LED_CAPS_LOCK_PIN, LED_PIN_ON_STATE);
 #endif
-        }
-        else {
+        } else {
             alt_spam_timestamp = 0;
             del_weak_mods(MOD_BIT(KC_LALT));
             send_keyboard_report();

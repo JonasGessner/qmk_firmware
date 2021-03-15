@@ -63,6 +63,9 @@ bool windows_shortcut_hook(bool key_down, void *ctx) {
         del_weak_mods(MOD_BIT(KC_LGUI));
         send_keyboard_report();
     }
+    else {
+        del_weak_mods(MOD_BIT(KC_LCTL));
+    }
 
     return true;
 }

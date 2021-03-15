@@ -14,7 +14,7 @@ tapping_action_make_single_and_double_tap(fn_tap, MO(LAYER_FN), 400, 400, {
     tap_code16(C(G(KC_SPACE))); // Open emoji menu
     return true;
 }, {
-    tap_code16(G(KC_F12)); // Mapped to custom automator action on OS
+    tap_code16(G(A(KC_F12))); // Mapped to custom automator action on OS
     return true;
 });
 
