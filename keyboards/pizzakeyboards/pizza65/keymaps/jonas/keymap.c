@@ -179,6 +179,10 @@ static uint16_t register_time = 0;
 static uint16_t encoder_keycode = 0;
 
 void encoder_update_user(uint8_t index, bool clockwise) {
+    if (IS_LAYER_ON_STATE(default_layer_state, LAYER_NULL)) {
+        return;
+    }
+
     if (clockwise) {
         if ((get_mods() & MOD_MASK_CTRL) != 0) {
             brightness_clicks++;
@@ -218,17 +222,18 @@ void matrix_scan_user() {
         return;
     }
 
+    const bool small_increment = (get_mods() & MOD_MASK_ALT) != 0 || IS_LAYER_ON(LAYER_FN);
+
     if (clicks > 0) {
-        if ((get_mods() & MOD_MASK_ALT) != 0) {
+        if (small_increment) {
             encoder_keycode = A(S(KC__VOLUP));
-        }
-        else {
+        } else {
             encoder_keycode = KC__VOLUP;
         }
         clicks--;
     }
     else if (clicks < 0) {
-        if ((get_mods() & MOD_MASK_ALT) != 0) {
+        if (small_increment) {
             encoder_keycode = A(S(KC__VOLDOWN));
         } else {
             encoder_keycode = KC__VOLDOWN;
@@ -236,14 +241,14 @@ void matrix_scan_user() {
         clicks++;
     } else {
         if (brightness_clicks > 0) {
-            if ((get_mods() & MOD_MASK_ALT) != 0) {
+            if (small_increment) {
                 encoder_keycode = A(S(KC_BRMU));
             } else {
                 encoder_keycode = KC_BRMU;
             }
             brightness_clicks--;
         } else if (brightness_clicks < 0) {
-            if ((get_mods() & MOD_MASK_ALT) != 0) {
+            if (small_increment) {
                 encoder_keycode = A(S(KC_BRMD));
             } else {
                 encoder_keycode = KC_BRMD;
