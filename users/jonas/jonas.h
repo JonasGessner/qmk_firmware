@@ -1,6 +1,6 @@
 #pragma once
 
-#include QMK_KEYBOARD_H
+#include "quantum.h"
 
 #include "config.h"
 #include "tapping_action.h"
